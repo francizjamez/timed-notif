@@ -1,20 +1,34 @@
-const buttons = window.document.querySelectorAll("button");
+const defaultNotifBtn = document.getElementById("default");
+const dangerNotifBtn = document.getElementById("danger");
 const body = document.querySelector("div");
 
-buttons.forEach((btn) =>
-  btn.addEventListener("click", (e) => {
-    createTimedNotif(e.target.innerText);
-  })
-);
+let notifying = false;
 
-function createTimedNotif(message) {
+defaultNotifBtn.addEventListener("click", (e) => {
+  if (!notifying) {
+    createTimedNotif(e.target.innerText, "default");
+  }
+});
+
+dangerNotifBtn.addEventListener("click", (e) => {
+  if (!notifying) {
+    createTimedNotif(e.target.innerText, "danger");
+  }
+});
+
+function createTimedNotif(message, color) {
+  notifying = true;
   const container = document.createElement("div");
-  container.className =
-    "bg-white absolute top-0 p-4 rounded bg-gray-900 text-white mt-2";
+  container.className = `w-64 bg-white absolute top-0 p-4 rounded text-white mt-2 cursor-default text-center ${
+    color === "danger" ? `bg-red-600` : `bg-gray-900`
+  }`;
   container.innerText = message;
   body.appendChild(container);
 
-  let timer = setTimeout(() => container.remove(), 2000);
+  let timer = setTimeout(() => {
+    notifying = false;
+    container.remove();
+  }, 2000);
   container.addEventListener("mouseover", (e) => {
     clearTimeout(timer);
   });
